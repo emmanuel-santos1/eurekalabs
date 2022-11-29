@@ -10,6 +10,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from sqlalchemy.orm import sessionmaker
 
+import redis.asyncio as redis
+from fastapi_limiter import FastAPILimiter
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # this is to include backend dir in sys.path so that we can import from db,main.py
 
@@ -23,6 +26,12 @@ from tests.utils.users import authentication_token_from_email
 def start_application():
     app = FastAPI()
     app.include_router(api_router)
+    
+    @app.on_event("startup")
+    async def app_startup():
+        r = redis.from_url("redis://127.0.0.1", encoding="utf-8", decode_responses=True)
+        await FastAPILimiter.init(redis=r)
+
     return app
 
 

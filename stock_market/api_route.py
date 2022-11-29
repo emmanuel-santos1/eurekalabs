@@ -1,7 +1,7 @@
 
 
 from decimal import Decimal
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 import requests
@@ -10,7 +10,7 @@ from sql_app.models import StockMarket, User
 
 from sql_app.session import get_db
 from users.api_route import get_current_user_from_token
-
+from fastapi_limiter.depends import RateLimiter
 
 router = APIRouter()
 
@@ -19,7 +19,9 @@ router = APIRouter()
 def get_stock_market(
     symbol: str,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user_from_token)
+    current_user: User = Depends(get_current_user_from_token),
+    limit_second = Depends(RateLimiter(times=1, seconds=1)),
+    limit_min = Depends(RateLimiter(times=10, seconds=60))
 ):
     apikey = settings.API_KEY
     response = requests.get(
