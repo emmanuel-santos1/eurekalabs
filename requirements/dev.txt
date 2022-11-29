@@ -1,0 +1,6 @@
+-r base.txt
+
+ipdb
+pytest
+pre-commit
+responses
