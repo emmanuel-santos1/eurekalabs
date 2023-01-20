@@ -6,3 +6,4 @@ print_tree.py
 sql_app.db
 test_db.db
 eurekalabs.log
+volumes/

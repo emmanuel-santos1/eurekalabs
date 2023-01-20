@@ -29,7 +29,7 @@ def start_application():
     
     @app.on_event("startup")
     async def app_startup():
-        r = redis.from_url("redis://127.0.0.1", encoding="utf-8", decode_responses=True)
+        r = redis.from_url(settings.REDIS_URL, encoding="utf-8", decode_responses=True)
         await FastAPILimiter.init(redis=r)
 
     return app

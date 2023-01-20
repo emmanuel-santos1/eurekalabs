@@ -33,7 +33,7 @@ def create_tables():
 def start_application():
     app = FastAPI(title=settings.PROJECT_NAME, version=settings.PROJECT_VERSION)
     include_router(app)
-    configure_static(app)
+    # configure_static(app)
     create_tables()
     return app
 
@@ -62,7 +62,7 @@ async def log_middle(request: Request, call_next):
 @app.on_event("startup")
 async def app_startup():
     await check_db_connected()
-    r = redis.from_url("redis://127.0.0.1", encoding="utf-8", decode_responses=True)
+    r = redis.from_url(settings.REDIS_URL, encoding="utf-8", decode_responses=True)
     await FastAPILimiter.init(redis=r)
 
 
